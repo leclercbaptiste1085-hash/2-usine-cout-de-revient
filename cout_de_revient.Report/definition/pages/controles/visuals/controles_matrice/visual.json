@@ -1,0 +1,149 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "controles_matrice",
+  "position": {
+    "x": 24,
+    "y": 24,
+    "z": 19000,
+    "height": 300,
+    "width": 1232,
+    "tabOrder": 19000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "standards"
+                    }
+                  },
+                  "Property": "produit"
+                }
+              },
+              "queryRef": "standards.produit",
+              "nativeQueryRef": "produit",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Coût variable réel"
+                }
+              },
+              "queryRef": "production.Coût variable réel",
+              "nativeQueryRef": "Coût variable réel"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Coût standard"
+                }
+              },
+              "queryRef": "production.Coût standard",
+              "nativeQueryRef": "Coût standard"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart de coût"
+                }
+              },
+              "queryRef": "production.Écart de coût",
+              "nativeQueryRef": "Écart de coût"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Contrôle écarts"
+                }
+              },
+              "queryRef": "production.Contrôle écarts",
+              "nativeQueryRef": "Contrôle écarts"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Pièces bonnes"
+                }
+              },
+              "queryRef": "production.Pièces bonnes",
+              "nativeQueryRef": "Pièces bonnes"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Charges fixes"
+                }
+              },
+              "queryRef": "production.Charges fixes",
+              "nativeQueryRef": "Charges fixes"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Contrôle : Contrôle écarts doit valoir 0 sur chaque ligne'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

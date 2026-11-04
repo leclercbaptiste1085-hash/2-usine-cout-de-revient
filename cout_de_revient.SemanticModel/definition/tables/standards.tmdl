@@ -1,0 +1,63 @@
+table standards
+
+	column produit
+		dataType: string
+		summarizeBy: none
+		sourceColumn: produit
+
+	column kg_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: kg_std
+
+	column prix_matiere_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prix_matiere_std
+
+	column h_mo_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_mo_std
+
+	column taux_horaire_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: taux_horaire_std
+
+	column kwh_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: kwh_std
+
+	column prix_elec_std
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prix_elec_std
+
+	column cadence_pieces_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: cadence_pieces_h
+
+	column prix_vente
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prix_vente
+
+	column cout_unitaire_std = standards[kg_std] * standards[prix_matiere_std] + standards[h_mo_std] * standards[taux_horaire_std] + standards[kwh_std] * standards[prix_elec_std] / 1000
+		dataType: double
+		formatString: #,0.00 €
+		summarizeBy: none
+
+
+
+	partition standards = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Dossier & "standards.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Entetes = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Types = Table.TransformColumnTypes(Entetes, {{"produit", type text}, {"kg_std", type number}, {"prix_matiere_std", type number}, {"h_mo_std", type number}, {"taux_horaire_std", type number}, {"kwh_std", type number}, {"prix_elec_std", type number}, {"cadence_pieces_h", type number}, {"prix_vente", type number}}, "en-US")
+				in
+				    Types

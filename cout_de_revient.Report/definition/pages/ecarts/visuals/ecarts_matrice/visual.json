@@ -1,0 +1,226 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "ecarts_matrice",
+  "position": {
+    "x": 24,
+    "y": 466,
+    "z": 9000,
+    "height": 238,
+    "width": 1232,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "standards"
+                    }
+                  },
+                  "Property": "produit"
+                }
+              },
+              "queryRef": "standards.produit",
+              "nativeQueryRef": "produit",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Coût unitaire standard"
+                }
+              },
+              "queryRef": "production.Coût unitaire standard",
+              "nativeQueryRef": "Coût unitaire standard"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Coût unitaire réel"
+                }
+              },
+              "queryRef": "production.Coût unitaire réel",
+              "nativeQueryRef": "Coût unitaire réel"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Taux de rebut"
+                }
+              },
+              "queryRef": "production.Taux de rebut",
+              "nativeQueryRef": "Taux de rebut"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart rebuts"
+                }
+              },
+              "queryRef": "production.Écart rebuts",
+              "nativeQueryRef": "Écart rebuts"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart matière"
+                }
+              },
+              "queryRef": "production.Écart matière",
+              "nativeQueryRef": "Écart matière"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart main-d'œuvre"
+                }
+              },
+              "queryRef": "production.Écart main-d'œuvre",
+              "nativeQueryRef": "Écart main-d'œuvre"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart énergie"
+                }
+              },
+              "queryRef": "production.Écart énergie",
+              "nativeQueryRef": "Écart énergie"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart de coût"
+                }
+              },
+              "queryRef": "production.Écart de coût",
+              "nativeQueryRef": "Écart de coût"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "production"
+                    }
+                  },
+                  "Property": "Écart de coût %"
+                }
+              },
+              "queryRef": "production.Écart de coût %",
+              "nativeQueryRef": "Écart de coût %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "grid": [
+        {
+          "properties": {
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Right'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Écarts par produit : le rebut pèse plus que tous les autres postes réunis'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

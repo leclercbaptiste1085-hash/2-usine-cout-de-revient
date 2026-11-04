@@ -1,0 +1,11 @@
+relationship production_standards
+	fromColumn: production.produit
+	toColumn: standards.produit
+
+relationship production_mois
+	fromColumn: production.mois
+	toColumn: Mois.Mois
+
+relationship charges_mois
+	fromColumn: charges_fixes.mois
+	toColumn: Mois.Mois

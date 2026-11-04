@@ -1,0 +1,4 @@
+produit,kg_std,prix_matiere_std,h_mo_std,taux_horaire_std,kwh_std,prix_elec_std,cadence_pieces_h,prix_vente
+Carter moteur,4.2,2.4,0.25,38.0,18.0,80.0,40,38.0
+Support batterie,2.1,2.4,0.15,38.0,9.5,80.0,60,19.0
+Boitier electronique,0.9,2.4,0.1,38.0,4.5,80.0,90,10.0

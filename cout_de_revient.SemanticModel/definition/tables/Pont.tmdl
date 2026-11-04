@@ -1,0 +1,16 @@
+table Pont
+
+	column Étape
+		dataType: string
+		summarizeBy: none
+		sourceColumn: [Étape]
+		sortByColumn: Ordre
+
+	column Ordre
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: [Ordre]
+
+	partition Pont = calculated
+		mode: import
+		source = DATATABLE ( "Étape", STRING, "Ordre", INTEGER, { { "Coût standard", 1 }, { "Rebuts", 2 }, { "Matière", 3 }, { "Main-d'œuvre", 4 }, { "Énergie : conso", 5 }, { "Énergie : prix", 6 } } )

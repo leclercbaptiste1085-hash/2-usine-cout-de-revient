@@ -1,0 +1,22 @@
+table Mois
+
+	column Mois
+		dataType: dateTime
+		formatString: mmm yyyy
+		summarizeBy: none
+		sourceColumn: [Mois]
+
+	column Numéro
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: [Numéro]
+
+	column Libellé
+		dataType: string
+		summarizeBy: none
+		sourceColumn: [Libellé]
+		sortByColumn: Numéro
+
+	partition Mois = calculated
+		mode: import
+		source = SELECTCOLUMNS ( GENERATESERIES ( 1, 12, 1 ), "Mois", DATE ( 2025, [Value], 1 ), "Numéro", [Value], "Libellé", FORMAT ( DATE ( 2025, [Value], 1 ), "mmm" ) )

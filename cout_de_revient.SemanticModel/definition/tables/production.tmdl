@@ -1,0 +1,209 @@
+table production
+
+	column mois
+		dataType: dateTime
+		formatString: mmm yyyy
+		summarizeBy: none
+		sourceColumn: mois
+
+	column produit
+		dataType: string
+		summarizeBy: none
+		sourceColumn: produit
+
+	column quantite_bonne
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: quantite_bonne
+
+	column quantite_rebut
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: quantite_rebut
+
+	column kg_reel
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: kg_reel
+
+	column prix_matiere_reel
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prix_matiere_reel
+
+	column h_mo_reelles
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_mo_reelles
+
+	column taux_horaire_reel
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: taux_horaire_reel
+
+	column kwh_reel
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: kwh_reel
+
+	column prix_elec_reel
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prix_elec_reel
+
+	column heures_ouverture
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: heures_ouverture
+
+	column quantite_fabriquee = production[quantite_bonne] + production[quantite_rebut]
+		dataType: int64
+		summarizeBy: sum
+
+
+	measure 'Pièces bonnes' = SUM ( production[quantite_bonne] )
+		formatString: #,0
+		displayFolder: 1. Volumes
+
+	measure 'Pièces rebutées' = SUM ( production[quantite_rebut] )
+		formatString: #,0
+		displayFolder: 1. Volumes
+
+	measure 'Taux de rebut' = DIVIDE ( [Pièces rebutées], [Pièces bonnes] + [Pièces rebutées] )
+		formatString: 0.0 %
+		displayFolder: 1. Volumes
+
+	measure 'Chiffre d''affaires' = SUMX ( production, production[quantite_bonne] * RELATED ( standards[prix_vente] ) )
+		formatString: #,0 €
+		displayFolder: 1. Volumes
+
+	measure 'Coût matière réel' = SUMX ( production, production[kg_reel] * production[prix_matiere_reel] )
+		formatString: #,0 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût main-d''œuvre réel' = SUMX ( production, production[h_mo_reelles] * production[taux_horaire_reel] )
+		formatString: #,0 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût énergie réel' = SUMX ( production, production[kwh_reel] * production[prix_elec_reel] / 1000 )
+		formatString: #,0 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût variable réel' = [Coût matière réel] + [Coût main-d'œuvre réel] + [Coût énergie réel]
+		formatString: #,0 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût standard' = SUMX ( production, production[quantite_bonne] * RELATED ( standards[cout_unitaire_std] ) )
+		formatString: #,0 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût unitaire réel' = DIVIDE ( [Coût variable réel], [Pièces bonnes] )
+		formatString: #,0.00 €
+		displayFolder: 2. Coûts
+
+	measure 'Coût unitaire standard' = DIVIDE ( [Coût standard], [Pièces bonnes] )
+		formatString: #,0.00 €
+		displayFolder: 2. Coûts
+
+	measure 'Écart de coût' = [Coût variable réel] - [Coût standard]
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart de coût %' = DIVIDE ( [Écart de coût], [Coût standard] )
+		formatString: 0.0 %
+		displayFolder: 3. Écarts
+
+	measure 'Écart rebuts' = SUMX ( production, production[quantite_rebut] * RELATED ( standards[cout_unitaire_std] ) )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart matière quantité' = SUMX ( production, ( production[kg_reel] - production[quantite_fabriquee] * RELATED ( standards[kg_std] ) ) * RELATED ( standards[prix_matiere_std] ) )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart matière prix' = SUMX ( production, ( production[prix_matiere_reel] - RELATED ( standards[prix_matiere_std] ) ) * production[kg_reel] )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart MO rendement' = SUMX ( production, ( production[h_mo_reelles] - production[quantite_fabriquee] * RELATED ( standards[h_mo_std] ) ) * RELATED ( standards[taux_horaire_std] ) )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart MO taux' = SUMX ( production, ( production[taux_horaire_reel] - RELATED ( standards[taux_horaire_std] ) ) * production[h_mo_reelles] )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart énergie consommation' = SUMX ( production, ( production[kwh_reel] - production[quantite_fabriquee] * RELATED ( standards[kwh_std] ) ) * RELATED ( standards[prix_elec_std] ) / 1000 )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart énergie prix' = SUMX ( production, ( production[prix_elec_reel] - RELATED ( standards[prix_elec_std] ) ) * production[kwh_reel] / 1000 )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart matière' = [Écart matière quantité] + [Écart matière prix]
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart main-d''œuvre' = [Écart MO rendement] + [Écart MO taux]
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Écart énergie' = [Écart énergie consommation] + [Écart énergie prix]
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Contrôle écarts' = [Écart de coût] - [Écart rebuts] - [Écart matière] - [Écart main-d'œuvre] - [Écart énergie]
+		formatString: #,0.00
+		displayFolder: 3. Écarts
+
+	measure 'Montant pont' = SWITCH ( SELECTEDVALUE ( Pont[Étape] ), "Coût standard", [Coût standard], "Rebuts", [Écart rebuts], "Matière", [Écart matière], "Main-d'œuvre", [Écart main-d'œuvre], "Énergie : conso", [Écart énergie consommation], "Énergie : prix", [Écart énergie prix] )
+		formatString: #,0 €
+		displayFolder: 3. Écarts
+
+	measure 'Prix élec payé (€/MWh)' = DIVIDE ( [Coût énergie réel] * 1000, SUM ( production[kwh_reel] ) )
+		formatString: #,0.0
+		displayFolder: 4. Énergie
+
+	measure 'Prix élec budget' = AVERAGE ( standards[prix_elec_std] )
+		formatString: #,0.0
+		displayFolder: 4. Énergie
+
+	measure 'Prix spot' = AVERAGE ( prix_spot[prix_spot_eur_mwh] )
+		formatString: #,0.0
+		displayFolder: 4. Énergie
+
+	measure 'Prix spot moyen 2022' = AVERAGEX ( FILTER ( ALL ( prix_spot ), YEAR ( prix_spot[mois] ) = 2022 ), prix_spot[prix_spot_eur_mwh] )
+		formatString: #,0.0
+		displayFolder: 4. Énergie
+
+	measure 'Surcoût énergie au prix 2022' = SUMX ( production, production[kwh_reel] * ( [Prix spot moyen 2022] - RELATED ( standards[prix_elec_std] ) ) / 1000 )
+		formatString: #,0 €
+		displayFolder: 4. Énergie
+
+	measure 'Charges fixes' = SUM ( charges_fixes[montant] )
+		formatString: #,0 €
+		displayFolder: 5. Charges fixes
+
+	measure 'Charges fixes par pièce' = DIVIDE ( [Charges fixes], CALCULATE ( [Pièces bonnes], ALL ( standards ) ) )
+		formatString: #,0.00 €
+		displayFolder: 5. Charges fixes
+
+	measure 'Heures d''ouverture' = SUMX ( VALUES ( Mois[Mois] ), CALCULATE ( MAX ( production[heures_ouverture] ), ALL ( standards ) ) )
+		formatString: #,0
+		displayFolder: 5. Charges fixes
+
+	measure 'Coût de sous-activité' = SUMX ( VALUES ( Mois[Mois] ), CALCULATE ( [Charges fixes] ) * ( 1 - DIVIDE ( CALCULATE ( MAX ( production[heures_ouverture] ), ALL ( standards ) ), 336 ) ) )
+		formatString: #,0 €
+		displayFolder: 5. Charges fixes
+
+
+	partition production = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Dossier & "production.csv"), [Delimiter = ",", Columns = 11, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Entetes = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Types = Table.TransformColumnTypes(Entetes, {{"mois", type date}, {"produit", type text}, {"quantite_bonne", Int64.Type}, {"quantite_rebut", Int64.Type}, {"kg_reel", type number}, {"prix_matiere_reel", type number}, {"h_mo_reelles", type number}, {"taux_horaire_reel", type number}, {"kwh_reel", type number}, {"prix_elec_reel", type number}, {"heures_ouverture", Int64.Type}}, "en-US")
+				in
+				    Types
